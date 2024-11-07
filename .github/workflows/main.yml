@@ -37,14 +37,14 @@ jobs:
 
       - name: 'Build and Push Container'
         run: |-
-          docker build -t "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.SERVICE}}/${{ env.IMAGE_TAG }}" ./
-          docker push "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.SERVICE}}/${{ env.IMAGE_TAG }}"
+          docker build -t "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/plumber-api/plumber-api:${{ github.sha }}" ./
+          docker push "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/plumber-api/plumber-api:${{ github.sha }}" 
       
       - name: 'Deploy to Cloud Run'
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: '${{ env.SERVICE }}'
           region: '${{ env.REGION }}'
-          image: ${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.SERVICE}}/${{ env.IMAGE_TAG }}
+          image: ${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/plumber-api/plumber-api:${{ github.sha }}"
 
 
