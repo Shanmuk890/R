@@ -18,7 +18,7 @@ WORKDIR /usr/local/src/app
 COPY api.R /usr/local/src/app/
 
 # Expose the port that Plumber will listen on
-EXPOSE 8000
+EXPOSE 8080
 
-# Run the Plumber API
-CMD ["R", "-e", "pr <- plumber::plumb('api.R'); pr$run(host='0.0.0.0', port=8000)"]
+# Run the Plumber API (listen on port 8080 as required by Cloud Run)
+CMD ["R", "-e", "pr <- plumber::plumb('api.R'); pr$run(host='0.0.0.0', port=as.integer(Sys.getenv('PORT', 8080)))"]
