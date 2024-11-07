@@ -15,6 +15,7 @@ function(a = 1, b = 2) {
   list(result = sum)
 }
 
-# Make the Plumber API listen on port 8080
-pr() %>%
-  pr_run(host = "0.0.0.0", port = as.integer(Sys.getenv("PORT", 8080)))
+# Ensure the Plumber API listens on the right port (Cloud Run uses 8080 by default)
+pr <- plumb('api.R')
+port <- as.integer(Sys.getenv('PORT', 8080))
+pr$run(host = '0.0.0.0', port = port)
