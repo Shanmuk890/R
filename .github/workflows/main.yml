@@ -1,50 +1,67 @@
-name: 'Build and Deploy R to Cloud Run'
+name: Build and Deploy Plumber API to Cloud Run
 
 on:
-  workflow_dispatch:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
 env:
-  PROJECT_ID: r-lang-440905 
-  GAR_LOCATION: us-central1
-  GAR_NAME: gh-demo
-  REGION: us-central1 
-  SERVICE: plumber-api
-  IMAGE_TAG: plumber-api:latest
-  
+  # Set environment variables
+  PROJECT_ID: r-lang-440905
+  REGION: us-central1
+  SERVICE_NAME: plumber-api
+  IMAGE_TAG: latest
+  GAR_LOCATION: us-central1-docker.pkg.dev
+
 jobs:
-  deploy:
-    runs-on: 'ubuntu-latest'
-
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
+  build_and_deploy:
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      
-      - name: google auth
-        uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{secrets.GCP_CREDENTIALS}}'
+    
+    # Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: 'Docker Auth'
-        run: |-
-          gcloud auth configure-docker "${{env.GAR_LOCATION}}-docker.pkg.dev"
+    # Set up R environment and install dependencies
+    - name: Set up R
+      uses: rocker/r-ver-action@v2
+      with:
+        r-version: '4.2.2'
 
-      - name: 'Build and Push Container'
-        run: |-
-          docker build -t "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/plumber-api/plumber-api:${{ github.sha }}" ./
-          docker push "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/plumber-api/plumber-api:${{ github.sha }}" 
-      
-      - name: 'Deploy to Cloud Run'
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: '${{ env.SERVICE }}'
-          region: '${{ env.REGION }}'
-          image: ${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/plumber-api/plumber-api:${{ github.sha }}"
+    # Install system dependencies and plumber
+    - name: Install dependencies
+      run: |
+        sudo apt-get update && sudo apt-get install -y \
+          libcurl4-openssl-dev \
+          libssl-dev \
+          libxml2-dev
+        R -e "install.packages('plumber')"
 
+    # Build Docker image
+    - name: Build Docker image
+      run: |
+        docker build -t "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.IMAGE_TAG }}" .
 
+    # Authenticate Docker with Google Container Registry
+    - name: Authenticate Docker with GCR
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
+
+    # Push the image to Google Artifact Registry (GAR)
+    - name: Push Docker image to GAR
+      run: |
+        docker push "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.IMAGE_TAG }}"
+
+    # Deploy the image to Cloud Run
+    - name: Deploy to Cloud Run
+      run: |
+        gcloud run deploy ${{ env.SERVICE_NAME }} \
+          --image "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.IMAGE_TAG }}" \
+          --platform managed \
+          --region ${{ env.REGION }} \
+          --project ${{ env.PROJECT_ID }} \
+          --allow-unauthenticated \
+          --timeout 600s
