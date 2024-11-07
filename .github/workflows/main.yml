@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - '"main"'
+      - main
 
 env:
   PROJECT_ID: r-lang-440905 
@@ -12,6 +12,7 @@ env:
   GAR_NAME: gh-demo
   REGION: us-central1 
   SERVICE: plumber-api
+  IMAGE_TAG: plumber-api:latest
   
 jobs:
   deploy:
@@ -36,8 +37,8 @@ jobs:
 
       - name: 'Build and Push Container'
         run: |-
-          docker build -t "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.SERVICE}}:${{github.sha}}" ./
-          docker push "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.SERVICE}}:${{github.sha}}"
+          docker build -t "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.SERVICE}}:${{ env.IMAGE_TAG }}" ./
+          docker push "${{env.GAR_LOCATION}}-docker.pkg.dev/${{env.PROJECT_ID}}/${{env.SERVICE}}:${{ env.IMAGE_TAG }}"
       
       - name: 'Deploy to Cloud Run'
         uses: google-github-actions/deploy-cloudrun@v0
