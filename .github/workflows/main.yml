@@ -7,7 +7,7 @@ on:
       - '"main"'
 
 env:
-  PROJECT_ID: symp-r 
+  PROJECT_ID: r-lang-440905 
   GAR_LOCATION: us-central1
   GAR_NAME: gh-demo
   REGION: us-central1 
