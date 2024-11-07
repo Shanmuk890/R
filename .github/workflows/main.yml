@@ -25,43 +25,23 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Set up R environment and install dependencies
-    - name: Set up R
-      uses: rocker/r-ver-action@v2
-      with:
-        r-version: '4.2.2'
-
-    # Install system dependencies and plumber
-    - name: Install dependencies
+    # Set up R environment manually
+    - name: Install R and dependencies
       run: |
-        sudo apt-get update && sudo apt-get install -y \
+        sudo apt-get update
+        sudo apt-get install -y \
+          r-base \
           libcurl4-openssl-dev \
           libssl-dev \
-          libxml2-dev
+          libxml2-dev \
+          docker.io
+
+    # Install the 'plumber' package in R
+    - name: Install plumber package
+      run: |
         R -e "install.packages('plumber')"
 
     # Build Docker image
     - name: Build Docker image
       run: |
-        docker build -t "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.IMAGE_TAG }}" .
-
-    # Authenticate Docker with Google Container Registry
-    - name: Authenticate Docker with GCR
-      run: |
-        echo "${{ secrets.GCP_SA_KEY }}" | docker login -u _json_key --password-stdin https://gcr.io
-
-    # Push the image to Google Artifact Registry (GAR)
-    - name: Push Docker image to GAR
-      run: |
-        docker push "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.IMAGE_TAG }}"
-
-    # Deploy the image to Cloud Run
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy ${{ env.SERVICE_NAME }} \
-          --image "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.IMAGE_TAG }}" \
-          --platform managed \
-          --region ${{ env.REGION }} \
-          --project ${{ env.PROJECT_ID }} \
-          --allow-unauthenticated \
-          --timeout 600s
+        docker build -t "${{ env.GAR_LOCATION }}/${{ env.PROJECT_ID }}
