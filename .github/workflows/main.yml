@@ -12,6 +12,7 @@ env:
   PROJECT_ID: ${{ secrets.CLOUD_RUN_PROJECT_NAME }}
   REGION: us-central1
   REPO_NAME: symphonize
+  BUCKET_NAME: bucketcloudr
 
 jobs:
   build_and_deploy:
@@ -52,4 +53,19 @@ jobs:
           --platform "managed" \
           --allow-unauthenticated \
           --execution-environment gen2 \
-
+      
+      
+      - name: Check if bucket exists
+        run: |
+          if ! gsutil ls gs://$BUCKET_NAME; then
+            echo "Bucket does not exist. Creating bucket..."
+            gsutil mb gs://$BUCKET_NAME
+          else
+            echo "Bucket already exists."
+          fi
+      - name: Store logs in bucket
+        run: |
+          echo "Storing logs and output in the Cloud Storage bucket."
+          # Example: Save a file (e.g., build log) and upload it to the bucket
+          echo "Build logs for $REPO_NAME" > build_logs.txt
+          gsutil cp build_logs.txt gs://$BUCKET_NAME/build_logs/$GITHUB_SHA-log.txt
