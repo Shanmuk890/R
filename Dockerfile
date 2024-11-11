@@ -1,24 +1,24 @@
-# Use the rocker/r-ver image, which includes a basic R environment
+# Use a base image
 FROM rocker/r-ver:4.2.2
 
-# Install system dependencies required for Plumber and R packages
+# Install necessary dependencies
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libssl-dev \
-    libxml2-dev \
-    && rm -rf /var/lib/apt/lists/*
+    libxml2-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install the 'plumber' package from CRAN
+# Install the Plumber package
 RUN R -e "install.packages('plumber')"
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /usr/local/src/app
 
-# Copy the Plumber API script into the container
-COPY api.R /usr/local/src/app/
+# Copy the api.R file into the container
+COPY src/api.R /usr/local/src/app/
 
-# Expose the port that Plumber will listen on
-EXPOSE 8080
+# Expose the port that the Plumber API will listen to
+EXPOSE 8000
 
-# Run the Plumber API
-CMD ["R", "-e", "pr <- plumber::plumb('api.R'); pr$run(host='0.0.0.0', port=as.integer(Sys.getenv('PORT', 8080)))]
+# Command to run the API (for example)
+CMD ["R", "-e", "plumber::pr_run('api.R', host = '0.0.0.0', port = 8000)"]
