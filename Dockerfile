@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 RUN R -e "install.packages('plumber')"
 
 # Copy your R script (code.R) into the container
-COPY your_api_file.R /usr/src/app/
+COPY code.R /usr/src/app/
 
 # Expose the port on which the Plumber API will run
 EXPOSE 8000
