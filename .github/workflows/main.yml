@@ -48,6 +48,7 @@ jobs:
           --region $REGION \
           --image gcr.io/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA \
           --port 8080 \
+          --timeout 900s
           --platform "managed" \
           --allow-unauthenticated \
           --execution-environment gen2 \
