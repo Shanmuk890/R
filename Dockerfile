@@ -18,7 +18,7 @@ WORKDIR /usr/local/src/app
 COPY api.R /usr/local/src/app/
 
 # Expose the port that the Plumber API will listen to
-EXPOSE 8000
+EXPOSE 8080
 
 # Command to run the API (for example)
 CMD ["R", "-e", "plumber::pr_run('api.R', host = '0.0.0.0', port = 8000)"]
