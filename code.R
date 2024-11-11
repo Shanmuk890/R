@@ -23,5 +23,4 @@ function(a, b) {
   return(list(sum = result))
 }
 
-pr <- plumb("/usr/local/src/app/code.R")
-pr$run(host = "0.0.0.0", port = 8080)
+
