@@ -55,10 +55,7 @@ jobs:
           --execution-environment gen2 \
       
       
-      - name: Upload Plumber API output to Cloud Storage
+      - name: Upload build logs to Cloud Storage
         run: |-
-          # Example: Upload an output file (e.g., output.json) to Cloud Storage
-          gsutil cp path_to_output_file.json gs://$BUCKET_NAME/output.json
-          # Example: Save a file (e.g., build log) and upload it to the bucket
           echo "Build logs for $REPO_NAME" > build_logs.txt
           gsutil cp build_logs.txt gs://$BUCKET_NAME/build_logs/$GITHUB_SHA-log.txt
