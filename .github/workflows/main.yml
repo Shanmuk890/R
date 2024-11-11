@@ -47,7 +47,7 @@ jobs:
           gcloud beta run deploy $REPO_NAME \
           --region $REGION \
           --image gcr.io/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA \
-          --port 8000 \
+          --port 8080 \
           --platform "managed" \
           --allow-unauthenticated \
           --execution-environment gen2 \
