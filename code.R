@@ -29,4 +29,6 @@ function() {
   pr$swagger()  # This will serve the Swagger UI at /swagger endpoint
 }
 
+pr <- plumb('/usr/local/src/app/code.R')
+
 
