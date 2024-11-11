@@ -1,24 +1,21 @@
-# Use the official R image from Docker Hub
-FROM rocker/r-ver:4.2.3
+# Use an official R base image
+FROM rocker/r-ver:4.2.2
 
-# Set the working directory inside the container
-WORKDIR /usr/local/src/app
-
-# Install system dependencies (for building R packages)
+# Install system dependencies for Plumber and other R packages
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libssl-dev \
     libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Plumber, logger, googleAuthR, and googleCloudStorageR packages
-RUN R -e "install.packages(c('plumber', 'logger', 'googleAuthR', 'googleCloudStorageR'))"
+# Install Plumber R package
+RUN R -e "install.packages('plumber')"
 
-# Copy your code.R file into the container
-COPY code.R /usr/local/src/app/code.R
+# Copy the R script to the container
+COPY api.R /usr/local/bin/api.R
 
-# Expose port 8000 to access the Plumber API
+# Expose port 8000 (Plumber's default port)
 EXPOSE 8000
 
-# Run the Plumber API when the container starts
-CMD ["R", "-e", "pr <- plumber::plumb('/usr/local/src/app/code.R'); pr$run(host='0.0.0.0', port=8000)"]
+# Command to run the API using Plumber
+CMD ["R", "-e", "pr <- plumb('/usr/local/bin/api.R'); pr$run(host='0.0.0.0', port=8000)"]
