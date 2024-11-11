@@ -32,5 +32,5 @@ function() {
 # Create the plumber router
 pr <- plumb('/usr/local/src/app/code.R')
 
-# Run the Plumber API on port 8080
-pr$run(host = '0.0.0.0', port = 8080)
+# Run the Plumber API on port 8000
+pr$run(host = '0.0.0.0', port = 8000)
