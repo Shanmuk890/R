@@ -18,7 +18,7 @@ RUN R -e "install.packages(c('plumber', 'logger', 'googleAuthR', 'googleCloudSto
 COPY code.R /usr/local/src/app/code.R
 
 # Expose port 8000 to access the Plumber API
-EXPOSE 8080
+EXPOSE 8000
 
 # Run the Plumber API when the container starts
-CMD ["R", "-e", "pr <- plumber::plumb('/usr/local/src/app/code.R'); pr$run(host='0.0.0.0', port=8080)"]
+CMD ["R", "-e", "pr <- plumber::plumb('/usr/local/src/app/code.R'); pr$run(host='0.0.0.0', port=8000)"]
