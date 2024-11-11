@@ -48,9 +48,8 @@ jobs:
           --region $REGION \
           --image gcr.io/$PROJECT_ID/$REPO_NAME:$GITHUB_SHA \
           --port 8080 \
-          --timeout 900s
+          --timeout 900s \
           --platform "managed" \
           --allow-unauthenticated \
           --execution-environment gen2 \
-          --add-volume=name=v_mount,type=cloud-storage,bucket=symphonize \
-          --add-volume-mount=volume=v_mount,mount-path=/mnt/my-volume          
+  
