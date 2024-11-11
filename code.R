@@ -29,6 +29,6 @@ function() {
   pr$swagger()  # This will serve the Swagger UI at /swagger endpoint
 }
 
-pr <- plumb('/usr/local/src/app/code.R')
+pr$run(host = '0.0.0.0', port = 8000) 
 
 
