@@ -23,3 +23,14 @@ function(a, b) {
   return(list(sum = result))
 }
 
+#* Swagger UI
+#* @get /swagger
+function() {
+  pr$swagger()  # This will serve the Swagger UI at /swagger endpoint
+}
+
+# Create the plumber router
+pr <- plumb('/usr/local/src/app/code.R')
+
+# Run the Plumber API on port 8080
+pr$run(host = '0.0.0.0', port = 8080)
