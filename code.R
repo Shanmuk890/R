@@ -23,4 +23,7 @@ function(a, b) {
   return(list(sum = result))
 }
 
+pr <- plumb("code.R") 
+pr %>% swagger()
+pr$run(port = 8000)
 
