@@ -12,10 +12,10 @@ RUN apt-get update && apt-get install -y \
 RUN R -e "install.packages('plumber')"
 
 # Copy the R script to the container
-COPY api.R /usr/local/bin/api.R
+COPY code.R /usr/local/bin/code.R
 
 # Expose port 8000 (Plumber's default port)
 EXPOSE 8000
 
 # Command to run the API using Plumber
-CMD ["R", "-e", "pr <- plumb('/usr/local/bin/api.R'); pr$run(host='0.0.0.0', port=8000)"]
+CMD ["R", "-e", "pr <- plumb('/usr/local/bin/code.R'); pr$run(host='0.0.0.0', port=8000)"]
