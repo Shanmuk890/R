@@ -1,21 +1,15 @@
+# api.R
 library(plumber)
 
-#* Return a greeting message
+# Example route for testing
 #* @get /hello
+#* @serializer json
 function() {
-  list(message = "Hello, world!")
+  return(list(message = "Hello, World!"))
 }
 
-#* Add two numbers
-#* @get /add
-#* @param a The first number
-#* @param b The second number
-function(a = 1, b = 2) {
-  sum <- as.numeric(a) + as.numeric(b)
-  list(result = sum)
-}
+# Initialize and run the Plumber API
+pr <- plumb("api.R")
 
-# Ensure the Plumber API listens on the right port (Cloud Run uses 8080 by default)
-pr <- plumb('api.R')
-port <- as.integer(Sys.getenv('PORT', 8080))
-pr$run(host = '0.0.0.0', port = port)
+# Use the port set by Cloud Run (or fallback to 8080)
+pr$run(host = '0.0.0.0', port = as.integer(Sys.getenv('PORT', 8080)))
