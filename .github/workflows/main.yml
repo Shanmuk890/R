@@ -52,4 +52,5 @@ jobs:
           --platform "managed" \
           --allow-unauthenticated \
           --execution-environment gen2 \
-  
+          --add-volume=name=v_mount,type=cloud-storage,bucket=symphonize \
+          --add-volume-mount=volume=v_mount,mount-path=/mnt/my-volume
