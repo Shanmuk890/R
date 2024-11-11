@@ -11,8 +11,8 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Plumber package and any other R packages you need
-RUN R -e "install.packages('plumber')"
+# Install Plumber, logger, googleAuthR, and googleCloudStorageR packages
+RUN R -e "install.packages(c('plumber', 'logger', 'googleAuthR', 'googleCloudStorageR'))"
 
 # Copy your code.R file into the container
 COPY code.R /usr/local/src/app/code.R
