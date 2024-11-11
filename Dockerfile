@@ -15,7 +15,7 @@ RUN R -e "install.packages('plumber')"
 WORKDIR /usr/local/src/app
 
 # Copy the api.R file into the container
-COPY src/api.R /usr/local/src/app/
+COPY api.R /usr/local/src/app/
 
 # Expose the port that the Plumber API will listen to
 EXPOSE 8000
